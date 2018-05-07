@@ -1,17 +1,18 @@
 # Youtube Captions scraper
 
 > Fetch youtube user submitted or fallback to auto-generated captions
+(Just a Fix to [youtube-captions-scraper](https://github.com/algolia/youtube-captions-scraper.git))
 
 ## Installation
 
-* `> npm install -S youtube-captions-scraper` OR
-* `> yarn add youtube-captions-scraper`
+* `> npm install -S youtube-captions-scraper-fix` OR
+* `> yarn add youtube-captions-scraper-fix`
 
 ## Usage
 
 ```js
 // ES6 / TypeScript
-import { getSubtitles } from 'youtube-captions-scraper';
+import { getSubtitles } from 'youtube-captions-scraper-fix';
 
 getSubtitles({
   videoID: 'XXXXX', // youtube video id
@@ -21,7 +22,7 @@ getSubtitles({
 });
 
 // ES5
-var getSubtitles = require('youtube-captions-scraper').getSubtitles;
+var getSubtitles = require('youtube-captions-scraper-fix').getSubtitles;
 
 getSubtitles({
   videoID: 'XXXXX', // youtube video id
@@ -33,7 +34,7 @@ getSubtitles({
 
 Captions will be an array of object of this format:
 
-```js
+```flow js
 {
   "start": Number,
   "dur": Number,
