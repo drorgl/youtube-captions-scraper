@@ -12,5 +12,10 @@ test('Extract estonia war subtitles', async t => {
 
 test('Extract passive income video', async t => {
   const subtitles = await getSubtitles({ videoID: 'JueUvj6X3DA' });
-  t.deepEqual(subtitles[0].text, '- Creating passive income takes work,');
+  t.deepEqual(subtitles[0].text, 'creating passive income takes work but');
+});
+
+test('Extract english subtitles from grow online video', async t => {
+  const subtitles = await getSubtitles({ videoID: 'Uar2hXRrckY' });
+  t.deepEqual(subtitles[0].text, '- Hey everyone.');
 });
