@@ -1,18 +1,26 @@
-# Youtube Captions scraper
+# Youtube Captions Scraper
 
-> Fetch youtube user submitted or fallback to auto-generated captions
+Note: This is forked from [syzer/youtube-captions-scraper](https://github.com/syzer/youtube-captions-scraper), typescriptified and added a few other options
+
+* Fetch Caption Tracks
+* Fetch Subtitles by language
+* Fetch Auto-Generated Captions
+* Fetch Full Text of Captions
 
 ## Installation
 
-* `> npm install -S youtube-captions-scraper` OR
-* `> yarn add youtube-captions-scraper`
+ `> npm install @drorgl/youtube-captions-scraper`
 
 ## Usage
 
-```js
-// ES6 / TypeScript
-import { getSubtitles } from 'youtube-captions-scraper';
+```typescript
+import {
+  YoutubeCaptions, 
+  getSubtitles, 
+  getSubtitlesContent 
+  } from 'youtube-captions-scraper';
 
+//Get Subtitles for Video
 getSubtitles({
   videoID: 'XXXXX', // youtube video id
   lang: 'fr' // default: `en`
@@ -20,23 +28,26 @@ getSubtitles({
   console.log(captions);
 });
 
-// ES5
-var getSubtitles = require('youtube-captions-scraper').getSubtitles;
+//Get full transcription as one string
+const subtitles = await getSubtitlesContent({ videoID: "P-ygmGxuiEI" });
 
-getSubtitles({
-  videoID: 'XXXXX', // youtube video id
-  lang: 'fr' // default: `en`
-}).then(function(captions) {
-  console.log(captions);
-});
+let youtubeCaptions = new YoutubeCaptions('XXXXX' /*youtube video id*/);
+
+//retrieve caption tracks
+let captionTracks = await youtubeCaptions.getCaptionTracks();
+
+//retrieve subtitles by language
+let subtitles = await youtubeCaptions.getSubtitles('en' /*optional language*/);
+
 ```
 
 Captions will be an array of object of this format:
 
-```js
+```typescript
 {
   "start": Number,
   "dur": Number,
-  "text": String
+  "text": String, //HTML stripped subtitles
+  "htmlText":String
 }
 ```

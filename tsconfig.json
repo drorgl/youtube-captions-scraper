@@ -1,0 +1,46 @@
+{
+    "compilerOptions": {
+        "types": [
+            "node"
+        ],
+        "outDir": "dist",
+        "moduleResolution": "node",
+        "module": "commonjs", 
+        "removeComments": false,
+        "sourceMap": true,
+        "esModuleInterop": true,
+        "allowSyntheticDefaultImports":true,
+        "emitDecoratorMetadata": true,
+        "experimentalDecorators": true,
+        "noImplicitAny": true,
+        "declaration": true,
+        "resolveJsonModule": true,
+        "target":"es2017",
+        "lib": ["es2017"],  
+        "typeRoots": [
+            "./node_modules/@types",
+        ]
+    },
+    "include": [
+        "src/**/*"
+    ],
+    "exclude": [
+        "node_modules",
+        "dist"
+    ],
+    "typedocOptions":{
+        "exclude": ["**/*spec.ts"],
+        "excludeExternals": true,
+        "excludeNotExported": true,
+        "excludePrivate": true,
+        "hideGenerator": true,
+        "includes": "./src",
+        "out": "docs",
+        "module": "commonjs",
+        "stripInternal": true,
+        "mode": "modules",
+        "theme": "default",
+        "moduleResolution": "node",
+        "preserveConstEnums": true
+      }
+}

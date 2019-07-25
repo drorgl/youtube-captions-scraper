@@ -1,0 +1,7 @@
+CHANGELOG.md
+tsconfig.json
+tslint.json
+.vscode
+src
+test
+drorgl-youtube-captions-scraper-*
