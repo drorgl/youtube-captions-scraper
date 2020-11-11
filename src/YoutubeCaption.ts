@@ -1,4 +1,4 @@
-import axios from "axios";
+// import axios from "axios";
 import he from "he";
 import { ICaptionTrack } from "./ICaptionTrack";
 
@@ -6,6 +6,7 @@ import querystring from "querystring";
 
 import striptags from "striptags";
 import xml2js from "xml2js";
+import { IRequester, SuperAgentRequester } from "./crawler";
 import { ISubtitle } from "./ISubtitle";
 
 /**
@@ -16,6 +17,7 @@ import { ISubtitle } from "./ISubtitle";
  * @class YoutubeCaption
  */
 export class YoutubeCaption {
+	private static readonly defaultRequester = new SuperAgentRequester({});
 	private _video_info: string = null;
 	private _subtitles: { [lang: string]: ISubtitle[] } = {};
 
@@ -24,7 +26,7 @@ export class YoutubeCaption {
 	 * @param {string} videoId - The Youtube VideoId
 	 * @memberof YoutubeCaption
 	 */
-	constructor(public readonly videoId: string) {
+	constructor(public readonly videoId: string, public readonly requester: IRequester = YoutubeCaption.defaultRequester) {
 
 	}
 
@@ -37,11 +39,8 @@ export class YoutubeCaption {
 	public async getCaptionTracks(): Promise<ICaptionTrack[]> {
 		const videoInfo = await this.getVideoInfo();
 		const parsedUrl = querystring.parse(videoInfo);
-		// console.log(parsedUrl);
 		const player_response = parsedUrl.player_response as string;
-		// console.log("player response", player_response);
 		const playerResponse = JSON.parse(player_response);
-		// console.log("response", playerResponse);
 		const captions = playerResponse.captions.playerCaptionsTracklistRenderer;
 		const captionTracks = captions.captionTracks as ICaptionTrack[];
 
@@ -70,8 +69,7 @@ export class YoutubeCaption {
 			throw new Error("language not found");
 		}
 
-		const { data: transcript } = await axios.get(captionTrack.baseUrl);
-
+		const transcript = await (await this.requester.get(captionTrack.baseUrl)).toString();
 		const result = await this.parseString(transcript);
 		const lines = result.transcript.text.map((v: any) => {
 			const decodedHtml = he.decode(v._);
@@ -100,9 +98,7 @@ export class YoutubeCaption {
 			return this._video_info;
 		}
 
-		const { data } = await axios.get(
-			`https://youtube.com/get_video_info?video_id=${this.videoId}`
-		);
+		const data = await (await this.requester.get(`https://youtube.com/get_video_info?video_id=${this.videoId}`)).toString();
 		this._video_info = data;
 
 		return this._video_info;

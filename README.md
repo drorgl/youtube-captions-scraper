@@ -6,6 +6,7 @@ Note: This is forked from [syzer/youtube-captions-scraper](https://github.com/sy
 * Fetch Subtitles by language
 * Fetch Auto-Generated Captions
 * Fetch Full Text of Captions
+* Optional external HTTP requester
 
 ## Installation
 

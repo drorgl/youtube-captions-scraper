@@ -1,20 +1,24 @@
+import { fail } from "assert";
 import { expect } from "chai";
 import "mocha";
-import { getSubtitles, getSubtitlesContent, ISubtitle } from "../src";
+import querystring from "querystring";
+import { getSubtitles, getSubtitlesContent, ICaptionTrack, ISubtitle } from "../src";
 import { YoutubeCaption } from "../src/YoutubeCaption";
+import { MockRequester } from "./MockRequester";
 
 it("Extract estonia war subtitles", async () => {
 	const subtitles = await getSubtitles({ videoID: "HBA0xDHZjko" });
 	expect(subtitles[0]).to.deep.eq({
-		dur: "5.87",
-		start: "6.62",
-		text: "November 19",
+		dur: "5.679",
+		start: "7.12",
+		text: "november 1918",
+		htmlText: "november 1918"
 	});
 }).timeout(10000);
 
 it("Extract passive income video", async () => {
 	const subtitles = await getSubtitles({ videoID: "JueUvj6X3DA" });
-	expect(subtitles[0].text).to.contain("creating passive income takes work");
+	expect(subtitles[0].text).to.contain("Creating passive income takes work");
 }).timeout(10000);
 
 it("Extract automatic subtitles video", async () => {
@@ -27,9 +31,10 @@ describe("YoutubeCaptions", () => {
 		const youtubeCaptions = new YoutubeCaption("HBA0xDHZjko");
 		const subtitles = await youtubeCaptions.getSubtitles();
 		expect(subtitles[0]).to.deep.eq({
-			dur: "5.87",
-			start: "6.62",
-			text: "November 19",
+			dur: "5.679",
+			htmlText: "november 1918",
+			start: "7.12",
+			text: "november 1918"
 		});
 	}).timeout(10000);
 
@@ -47,7 +52,7 @@ describe("YoutubeCaptions", () => {
 	describe("Styled", () => {
 		let subtitles: ISubtitle[] = null;
 		before(async () => {
-			const youtubeCaptions = new YoutubeCaption( "9W0Dy1nM-zU" );
+			const youtubeCaptions = new YoutubeCaption("9W0Dy1nM-zU");
 			subtitles = await youtubeCaptions.getSubtitles();
 		});
 
@@ -68,4 +73,60 @@ describe("YoutubeCaptions", () => {
 
 	});
 
+});
+
+describe("external requester", () => {
+	const enTrack = querystring.encode({
+		player_response: JSON.stringify({
+			captions: {
+				playerCaptionsTracklistRenderer: {
+					captionTracks: [{
+						languageCode: "en",
+						baseUrl: "en-url"
+					}] as ICaptionTrack[]
+				}
+			}
+		})
+	});
+
+	const enTranscript = `
+		<?xml version="1.0" encoding="utf-8" ?>
+		<transcript>
+			<text start="0.381" dur="2.721">Creating passive</text>
+			<text start="3.102" dur="2.334">but once you implement those processes</text>
+		</transcript>
+	`;
+
+	const requester = new MockRequester([
+		{
+			url: "https://youtube.com/get_video_info?video_id=9W0Dy1nM-zU",
+			responseText: enTrack
+		},
+		{
+			url: "en-url",
+			responseText: enTranscript
+		}
+	]);
+
+	it("YoutubeCaption should call requester with desired url", async () => {
+		const youtubeCaptions = new YoutubeCaption("9W0Dy1nM-zU", requester);
+		const subtitles = await youtubeCaptions.getSubtitles();
+
+		expect(requester.requestedUrls[0]).to.eq("https://youtube.com/get_video_info?video_id=9W0Dy1nM-zU");
+		expect(subtitles[0].text).to.eq("Creating passive");
+	});
+
+	it("getSubtitles should call requester with desired url", async () => {
+		const subtitles = await getSubtitles({ videoID: "9W0Dy1nM-zU", requester });
+
+		expect(requester.requestedUrls[0]).to.eq("https://youtube.com/get_video_info?video_id=9W0Dy1nM-zU");
+		expect(subtitles[0].text).to.eq("Creating passive");
+	});
+
+	it("getSubtitlesContent should call requester with desired url", async () => {
+		const subtitles = await getSubtitlesContent({ videoID: "9W0Dy1nM-zU", requester });
+
+		expect(requester.requestedUrls[0]).to.eq("https://youtube.com/get_video_info?video_id=9W0Dy1nM-zU");
+		expect(subtitles).to.eq("Creating passive but once you implement those processes");
+	});
 });
