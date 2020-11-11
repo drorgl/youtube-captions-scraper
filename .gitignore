@@ -1,5 +1,9 @@
 node_modules
 dist
+.nyc_output
+coverage
+docs
+
 
 *.log
 .DS_Store

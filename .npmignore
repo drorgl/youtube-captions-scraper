@@ -5,3 +5,7 @@ tslint.json
 src
 test
 drorgl-youtube-captions-scraper-*
+.nyc_output
+coverage
+docs
+.nycrc

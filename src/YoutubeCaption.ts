@@ -24,6 +24,7 @@ export class YoutubeCaption {
 	/**
 	 * Creates an instance of YoutubeCaption
 	 * @param {string} videoId - The Youtube VideoId
+	 * @param {IRequester} requester - the http requester, defaults to SuperAgentRequester instance
 	 * @memberof YoutubeCaption
 	 */
 	constructor(public readonly videoId: string, public readonly requester: IRequester = YoutubeCaption.defaultRequester) {

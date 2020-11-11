@@ -1,4 +1,7 @@
 export interface ICaptionTrack {
+	/**
+	 * The caption url
+	 */
 	"baseUrl": string;
 	"name": {
 		"simpleText": string;
