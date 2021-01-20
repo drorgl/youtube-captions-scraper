@@ -16,7 +16,7 @@ Note: This is forked from [syzer/youtube-captions-scraper](https://github.com/sy
 
 ```typescript
 import {
-  YoutubeCaptions, 
+  YoutubeCaption, 
   getSubtitles, 
   getSubtitlesContent 
   } from 'youtube-captions-scraper';
@@ -32,7 +32,7 @@ getSubtitles({
 //Get full transcription as one string
 const subtitles = await getSubtitlesContent({ videoID: "P-ygmGxuiEI" });
 
-let youtubeCaptions = new YoutubeCaptions('XXXXX' /*youtube video id*/);
+let youtubeCaptions = new YoutubeCaption('XXXXX' /*youtube video id*/);
 
 //retrieve caption tracks
 let captionTracks = await youtubeCaptions.getCaptionTracks();
